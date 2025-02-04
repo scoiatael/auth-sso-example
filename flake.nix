@@ -27,32 +27,7 @@
           backend = pkgs.callPackage ./backend { };
         };
         devShells.default = pkgs.mkShell {
-          nativeBuildInputs = [ pkgs.nodejs pkgs.go pkgs.gopls ];
+          nativeBuildInputs = [ pkgs.nodejs pkgs.go pkgs.gopls pkgs.flyctl ];
         };
-      }) // {
-        nixosConfigurations = {
-          backend = inputs.nixpkgs.lib.nixosSystem {
-            modules = [
-              inputs.garnix-lib.nixosModules.garnix
-              {
-                _module.args = { self = inputs.self; };
-              }
-              # This is where the server is defined.
-              ./hosts/modules/base.nix
-              ./hosts/backend.nix
-            ];
-          };
-          frontend = inputs.nixpkgs.lib.nixosSystem {
-            modules = [
-              inputs.garnix-lib.nixosModules.garnix
-              {
-                _module.args = { self = inputs.self; };
-              }
-              # This is where the server is defined.
-              ./hosts/modules/base.nix
-              ./hosts/frontend.nix
-            ];
-          };
-        };
-      };
+      });
 }

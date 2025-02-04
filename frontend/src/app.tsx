@@ -3,7 +3,7 @@ import React from "react";
 export const App = () => {
   const [response, setResponse] = React.useState<null | string>();
   const fetchFromBackend = async () => {
-    const response = await fetch("/api");
+    const response = await fetch("https://backend-crimson-butterfly-8433.fly.dev");
     setResponse(await response.text());
   };
   if (response == null) {
