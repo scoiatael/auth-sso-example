@@ -10,6 +10,8 @@ import (
 )
 
 func handleRequest(w http.ResponseWriter, req *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "https://frontend-bold-lake-8819.fly.dev")
+	w.Header().Set("Access-Control-Allow-Credentials", "true")
 	cookie, err := req.Cookie("visits")
 	visits := 1
 	if err == nil {
