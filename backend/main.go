@@ -10,7 +10,7 @@ import (
 )
 
 func handleRequest(w http.ResponseWriter, req *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "https://frontend-bold-lake-8819.fly.dev")
+	w.Header().Set("Access-Control-Allow-Origin", "https://frontend.auth-sso.scoiatael.dev")
 	w.Header().Set("Access-Control-Allow-Credentials", "true")
 	cookie, err := req.Cookie("visits")
 	visits := 1
@@ -19,10 +19,10 @@ func handleRequest(w http.ResponseWriter, req *http.Request) {
 		visits++
 	}
 	http.SetCookie(w, &http.Cookie{
-		Name:    "visits",
-		Value:   fmt.Sprintf("%d", visits),
-		Expires: time.Now().Add(365 * 24 * time.Hour),
-		// SameSite: http.SameSiteNoneMode,
+		Name:     "visits",
+		Value:    fmt.Sprintf("%d", visits),
+		Expires:  time.Now().Add(365 * 24 * time.Hour),
+		SameSite: http.SameSiteStrictMode,
 		Secure:   true,
 		HttpOnly: true,
 	})

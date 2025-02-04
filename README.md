@@ -1,4 +1,4 @@
 # auth-sso-example
 
-Backend: https://backend-crimson-butterfly-8433.fly.dev
-Frontend: https://frontend-bold-lake-8819.fly.dev
+Backend: https://backend.auth-sso.scoiatael.dev
+Frontend: https://frontend.auth-sso.scoiatael.dev
