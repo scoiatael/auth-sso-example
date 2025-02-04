@@ -19,10 +19,10 @@ func handleRequest(w http.ResponseWriter, req *http.Request) {
 		visits++
 	}
 	http.SetCookie(w, &http.Cookie{
-		Name:     "visits",
-		Value:    fmt.Sprintf("%d", visits),
-		Expires:  time.Now().Add(365 * 24 * time.Hour),
-		SameSite: http.SameSiteNoneMode,
+		Name:    "visits",
+		Value:   fmt.Sprintf("%d", visits),
+		Expires: time.Now().Add(365 * 24 * time.Hour),
+		// SameSite: http.SameSiteNoneMode,
 		Secure:   true,
 		HttpOnly: true,
 	})
