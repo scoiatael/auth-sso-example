@@ -1,5 +1,6 @@
 {
-  description = "garnix example server with a typescript frontend and a go backend";
+  description =
+    "garnix example server with a typescript frontend and a go backend";
 
   # Add your nix dependencies here.
   inputs = {
@@ -14,35 +15,44 @@
 
   outputs = inputs:
     inputs.flake-utils.lib.eachSystem [ "x86_64-linux" "aarch64-darwin" ]
-      (system:
-        let
-          pkgs = import inputs.nixpkgs { inherit system; };
-        in
-        {
-          # Here you can define packages that your flake outputs.
-          packages = {
-            # This imports `./frontend/default.nix` which defines a nix package
-            # that builds the frontend bundle. This will be served as static
-            # files by the server.
-            frontend-bundle = pkgs.callPackage ./frontend { self = inputs.self; };
-            backend = pkgs.callPackage ./backend { };
+    (system:
+      let pkgs = import inputs.nixpkgs { inherit system; };
+      in {
+        # Here you can define packages that your flake outputs.
+        packages = {
+          # This imports `./frontend/default.nix` which defines a nix package
+          # that builds the frontend bundle. This will be served as static
+          # files by the server.
+          frontend-bundle = pkgs.callPackage ./frontend { self = inputs.self; };
+          backend = pkgs.callPackage ./backend { };
+        };
+        devShells.default = pkgs.mkShell {
+          nativeBuildInputs = [ pkgs.nodejs pkgs.go pkgs.gopls ];
+        };
+      }) // {
+        nixosConfigurations = {
+          backend = inputs.nixpkgs.lib.nixosSystem {
+            modules = [
+              inputs.garnix-lib.nixosModules.garnix
+              {
+                _module.args = { self = inputs.self; };
+              }
+              # This is where the server is defined.
+              ./hosts/modules/base.nix
+              ./hosts/backend.nix
+            ];
           };
-          devShells.default = pkgs.mkShell
-            {
-              nativeBuildInputs = [ pkgs.nodejs pkgs.go pkgs.gopls ];
-            };
-        })
-    //
-    {
-      nixosConfigurations.server = inputs.nixpkgs.lib.nixosSystem {
-        modules = [
-          inputs.garnix-lib.nixosModules.garnix
-          {
-            _module.args = { self = inputs.self; };
-          }
-          # This is where the server is defined.
-          ./hosts/server.nix
-        ];
+          frontend = inputs.nixpkgs.lib.nixosSystem {
+            modules = [
+              inputs.garnix-lib.nixosModules.garnix
+              {
+                _module.args = { self = inputs.self; };
+              }
+              # This is where the server is defined.
+              ./hosts/modules/base.nix
+              ./hosts/frontend.nix
+            ];
+          };
+        };
       };
-    };
 }
